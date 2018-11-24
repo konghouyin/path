@@ -1,4 +1,4 @@
-﻿// JavaScript source code
+// JavaScript source code
 
 var express = require('express');
 var Buffer = require('buffer').Buffer;
@@ -39,8 +39,23 @@ server.all('/index', function (req, res) {
     getHTML(req.query.url, res, filterindex);
 })
 
+server.all('/bigPic', function (req, res) {
+    console.log("bigPic  -->  " + req.query.url);
+    try {
+        getHTML(req.query.url, res, filterbigPic);
+    }
+    catch (e) {
+
+    }
+})
+
 
 server.listen(798);
+
+function filterbigPic(html) {
+    var $ = cheerio.load(html);
+    return httpComplete(findPosition($, ' .photo-show  img')[0].attribs.src);
+}
 
 function filterindex(html) {
     var $ = cheerio.load(html); //传入文档启动解析
@@ -50,6 +65,7 @@ function filterindex(html) {
         person: [],
         moreShortCommentary: {},
         moreMovieCommentary: {},
+        moreDiscuss: {},
     };
     obj.base.name = findPosition($,'#content > h1 > span:nth-child(1)')[0].children[0].data;
     obj.base.img = httpComplete(findPosition($,'#mainpic > a > img')[0].attribs.src);
@@ -94,7 +110,28 @@ function filterindex(html) {
     obj.moreMovieCommentary.link = httpComplete(arguments[1]+findPosition($, 'section.movie-content .pl a')[0].attribs.href);
     obj.moreMovieCommentary.num = parseInt(sub(findPosition($, 'section.movie-content .pl a')[0].children[0].data, 4, 2));
 
+    obj.discuss = Discuss($, "div.section-discussion .olt tr");
+    obj.moreDiscuss.link = httpComplete(findPosition($, 'div.section-discussion p.pl a')[0].attribs.href);
+    obj.moreDiscuss.num = parseInt(sub(extraction(findPosition($, 'div.section-discussion p.pl a')[0].children[0].data), 14, 2));
+
     return obj;
+
+    function Discuss($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 1; i < event.length; i++) {
+            var m = {
+                title: event[i].children[1].children[0].children[0].data,
+                link: httpComplete(event[i].children[1].children[0].attribs.href),
+                name: event[i].children[3].children[1].children[0].data,
+                backNum: parseInt(sub(event[1].children[5].children[0].children[0].data,1,3)),
+                time: event[i].children[7].children[0].children[0].data,
+            }
+            
+            arr.push(m);
+        }
+        return arr;
+    }
 
     function movieCommentary($, link) {
         var arr = new Array();
@@ -106,8 +143,8 @@ function filterindex(html) {
                 title: findPosition($, link + " .main-bd h2 a")[i].children[0].data,
                 goodNumber: parseInt(findPosition($, link + " .action-btn.up span")[i].children[0].data),
                 badNumber: parseInt(findPosition($, link + " .action-btn.down span")[i].children[0].data),
-                time: findPosition($, link + " .main-meta ")[i].attribs.title,
-                
+                time: findPosition($, link + " .main-meta")[i].children[0].data.split(' '),
+
                 message: extraction(findPosition($, link + " .short-content")[i].children[0].data),
             }
             try {
@@ -115,7 +152,6 @@ function filterindex(html) {
             } catch (e) {
                 m.star = -1;
             }
-            
             arr.push(m);
         }
         return arr;
@@ -127,7 +163,7 @@ function filterindex(html) {
         for (var i = 0; i < event.length; i++) {
             var m = {
                 goodNumber: parseInt(findPosition($, link + " .votes")[i].children[0].data),
-                time: findPosition($, link + " .comment-time ")[i].attribs.title,
+                time: findPosition($, link + " .comment-time ")[i].attribs.title.split(' '),
                 name: findPosition($, link + " .comment-info a")[i].children[0].data,
                 type: findPosition($, link + " .comment-info a")[i].next.next.children[0].data,
                 message: extraction(findPosition($, link + " .short")[i].children[0].data),
@@ -308,7 +344,12 @@ function filterNow(html) {
 //解析正在上映的电影
 
 
+
 function getHTML(url, caller, fn) {
+    var timer = setTimeout(function () {
+        send(caller, "网络错误！ --->无法访问指定的url");
+    }, 4000)
+
     http.get(url, function (res) {
 
         var chunks = [];
@@ -321,8 +362,22 @@ function getHTML(url, caller, fn) {
         res.on('end', function () {  //数据传输完
             var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
             var html = data.toString();
-            send(caller, JSON.stringify(fn(html,url)));
+            try {
+                var back = fn(html, url);
+                var flag = 1;
+            } catch (e) {
+                clearTimeout(timer);
+                send(caller, "解析错误！ --->url与解析模式不匹配");
+            }
+            if (flag) {
+                clearTimeout(timer);
+                send(caller, JSON.stringify(back));
+            }
         })
+
+    }).on('error', function () {
+        clearTimeout(timer);
+        send(caller,"网络错误！ --->无法访问指定的url");
     })
 }
 //获取HTML页面
@@ -408,7 +463,7 @@ function httpComplete(letter) {
         return "https://movie.douban.com" + letter;
     }
 }
-
+//补全http域名
 
 
 
