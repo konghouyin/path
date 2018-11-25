@@ -59,17 +59,90 @@ server.all('/showMovieAll', function (req, res) {
     getHTML(req.query.url, res, filtershowMovieAll);
 })
 
-server.all('/peopleAll', function (req, res) {
+server.all('/personAll', function (req, res) {
     console.log("peopleAll  -->  " + req.query.url);
     getHTML(req.query.url, res, filterpeopleAll);
 })
 
-server.all('/people', function (req, res) {
+server.all('/person', function (req, res) {
     console.log("people  -->  " + req.query.url);
     getHTML(req.query.url, res, filterpeople);
 })
 
+server.all('/top', function (req, res) {
+    var url = "";
+    if (req.query.url == undefined) {
+        url = "https://movie.douban.com/top250";
+    } else {
+        url = req.query.url;
+    }
+    console.log("top  -->  " + url);
+    getHTML(url, res, filterTop);
+})
+
+server.all('/hot', function (req, res) {
+    console.log("hot");
+    getHTML("https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=50&page_start=0", res, filterHot);
+})
+
 server.listen(798);
+
+function filterHot(html) {
+    var obj = JSON.parse(html).subjects;
+    var arr = new Array();
+    for (each in obj) {
+        var m = {
+            title: obj[each].title,
+            link: obj[each].url,
+            img: obj[each].cover,
+            star: parseFloat(obj[each].rate),
+        }
+        arr.push(m);
+    }
+    var back = {
+        hot:arr,
+    }
+    return back;
+}
+//解析热门电影
+
+function filterTop(html) {
+    var $ = cheerio.load(html);
+    var obj = {};
+    obj.top = List($, '.grid_view  li>.item');
+    obj.next = arguments[1] + findPosition($, '.paginator span.next a')[0].attribs.href;
+    return obj;
+
+    function List($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(findPosition($, link+' .pic a ')[i].attribs.href),
+                name: findPosition($, link+' .pic a ')[i].attribs.alt,
+                star: parseFloat(findPosition($, link + ' .info .star .rating_num')[i].children[0].data),
+                num: parseInt(sub(findPosition($, link + ' span:contains("评价")')[i].children[0].data,1,3)),
+                message: extraction(synopsis($, link + ' .info .bd p[class!="quote"]',i)),
+                img: httpComplete(findPosition($, link + ' .pic img')[i].attribs.src),
+                quote: findPosition($, link + ' .quote span')[i].children[0].data,
+                }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+    function synopsis($, link,num) {
+        var str = "";
+        var event = findPosition($, link)[num].children;
+        for (var i = 0; i < event.length; i++) {
+            if (event[i].data != undefined) {
+                str = str + "~" + event[i].data;
+            }
+        }
+        return str.substr(1);
+    }
+}
+//解析top250
 
 function filterpeople(html) {
     var $ = cheerio.load(html);
@@ -156,6 +229,7 @@ function filterpeople(html) {
     }
 
 }
+//解析人员详情
 
 function filterpeopleAll(html) {
     var $ = cheerio.load(html);
@@ -201,7 +275,7 @@ function filterpeopleAll(html) {
 function filtershowMovieAll(html) {
     var $ = cheerio.load(html);
     var obj = {};
-    obj.list = List($, '.video-list  li');
+    obj.showMovieAll = List($, '.video-list  li');
     return obj;
 
     function List($, link) {
@@ -227,7 +301,7 @@ function filtershowMovieAll(html) {
 function filterpicAll(html) {
     var $ = cheerio.load(html);
     var obj = {};
-    obj.list = List($, '.article .mod  li[class!="last more-pics"]');
+    obj.pic = List($, '.article .mod  li[class!="last more-pics"]');
     return obj;
 
     function List($, link) {
@@ -251,7 +325,7 @@ function filtershowMovie(html) {
     var obj = {
         movie: httpComplete(findPosition($, '#movie_player video source')[0].attribs.src),
     }
-    obj.list = List($, '#video-list .video-list-col li');
+    obj.showMovieList = List($, '#video-list .video-list-col li');
     return obj;
 
     function List($,link) {
@@ -577,41 +651,41 @@ function filterNow(html) {
 
 
 
-//function getHTML(url, caller, fn) {
-//    var timer = setTimeout(function () {
-//        send(caller, "网络错误！ --->无法访问指定的url");
-//    }, 4000)
-//
-//    http.get(url, function (res) {
-//
-//        var chunks = [];
-//        var size = 0;
-//
-//        res.on('data', function (chunk) {   //监听事件 传输
-//            chunks.push(chunk);
-//            size += chunk.length;
-//        });
-//        res.on('end', function () {  //数据传输完
-//            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
-//            var html = data.toString();
-//            try {
-//                var back = fn(html, url);
-//                var flag = 1;
-//            } catch (e) {
-//                clearTimeout(timer);
-//                send(caller, "解析错误！ --->url与解析模式不匹配");
-//            }
-//            if (flag) {
-//                clearTimeout(timer);
-//                send(caller, JSON.stringify(back));
-//            }
-//        })
-//
-//    }).on('error', function () {
-//        clearTimeout(timer);
-//        send(caller,"网络错误！ --->无法访问指定的url");
-//    })
-//}
+function getHTML(url, caller, fn) {
+    var timer = setTimeout(function () {
+        send(caller, "网络错误！ --->无法访问指定的url");
+    }, 4000)
+
+    http.get(url, function (res) {
+
+        var chunks = [];
+        var size = 0;
+
+        res.on('data', function (chunk) {   //监听事件 传输
+            chunks.push(chunk);
+            size += chunk.length;
+        });
+        res.on('end', function () {  //数据传输完
+            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
+            var html = data.toString();
+            try {
+                var back = fn(html, url);
+                var flag = 1;
+            } catch (e) {
+                clearTimeout(timer);
+                send(caller, "解析错误！ --->url与解析模式不匹配");
+            }
+            if (flag) {
+                clearTimeout(timer);
+                send(caller, JSON.stringify(back));
+            }
+        })
+
+    }).on('error', function () {
+        clearTimeout(timer);
+        send(caller,"网络错误！ --->无法访问指定的url");
+    })
+}
 //获取HTML页面
 function send(caller,message) {
     caller.setHeader("Content-type", "text/plain;charset=utf-8")
@@ -697,22 +771,5 @@ function httpComplete(letter) {
 }
 //补全http域名
 
-function getHTML(url, caller, fn) {
-    http.get(url, function (res) {
 
-        var chunks = [];
-        var size = 0;
-
-        res.on('data', function (chunk) {   //监听事件 传输
-            chunks.push(chunk);
-            size += chunk.length;
-        });
-        res.on('end', function () {  //数据传输完
-            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
-            var html = data.toString();
-            send(caller, JSON.stringify(fn(html, url)));
-        })
-    })
-}
-//获取HTML页面
 

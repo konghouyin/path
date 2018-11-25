@@ -252,7 +252,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    list:[
+    showMovieList:[
         {
             tittle:"预告片2",
             long:"00:30",
@@ -276,7 +276,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    list:[
+    pic:[
         {
             img: "https://img3.doubanio.com/...",
 			link: "https://movie.douban.com/...",
@@ -300,7 +300,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
   {
-    list:[
+    showMovieAll:[
         {
             tittle:"预告片2",
             long:"00:30",
@@ -403,13 +403,61 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ## 11.短评
 
+暂时不爬了。。。
+
 ## 12.top250
+
+- url：/top
+
+- 方法：GET
+
+- 参数：[url] 可选参数，如果参数为空，返回top25，加url返回对应top
+
+  ​	eg：http://www.konghouy.cn:798/top
+
+  ​	eg：http://www.konghouy.cn:798/top?url=https://movie.douban.com/top250?start=25&filter=
+
+- 返回
+
+```json
+{
+    top:[
+        {
+            img: "https://img3.doubanio.com/...",
+            link: "https://movie.douban.com/...",
+            message: "导演:弗兰...~1994/美国/犯罪剧情",
+            num: 1204520,
+            quote: "希望让人自由。",
+            star: 9.6,
+        },
+        ...
+    ],
+    next: "https://img3.doubanio.com/...",
+}
+```
+
+注意：message中，段落使用‘~’进行分割.
 
 ## 13.热门
 
+- url：/hot
+- 方法：GET
+- 参数：无
+- 返回
 
-
-
+```json
+{
+    hot:[
+        {
+            img: "https://img3.doubanio.com/..."
+            link: "https://movie.douban.com/..."
+            star: 9.0,
+            title: "我不是药神",
+        },
+        ...
+    ]
+}
+```
 
 ## 后台异常信息：
 
