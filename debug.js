@@ -41,21 +41,249 @@ server.all('/index', function (req, res) {
 
 server.all('/bigPic', function (req, res) {
     console.log("bigPic  -->  " + req.query.url);
-    try {
-        getHTML(req.query.url, res, filterbigPic);
-    }
-    catch (e) {
-
-    }
+    getHTML(req.query.url, res, filterbigPic);
 })
 
+server.all('/showMovie', function (req, res) {
+    console.log("showMovie  -->  " + req.query.url);
+    getHTML(req.query.url, res, filtershowMovie);
+})
+
+server.all('/picAll', function (req, res) {
+    console.log("picAll  -->  " + req.query.url);
+    getHTML(req.query.url, res, filterpicAll);
+})
+
+server.all('/showMovieAll', function (req, res) {
+    console.log("showMovieAll  -->  " + req.query.url);
+    getHTML(req.query.url, res, filtershowMovieAll);
+})
+
+server.all('/peopleAll', function (req, res) {
+    console.log("peopleAll  -->  " + req.query.url);
+    getHTML(req.query.url, res, filterpeopleAll);
+})
+
+server.all('/people', function (req, res) {
+    console.log("people  -->  " + req.query.url);
+    getHTML(req.query.url, res, filterpeople);
+})
 
 server.listen(798);
 
+function filterpeople(html) {
+    var $ = cheerio.load(html);
+    var obj = {
+        base: {},
+        pic: Pic($,'#photos ul a'),
+        recentMovie: Movie($,'#recent_movies .list-s li'),
+        goodMovie: Movie($,'#best_movies .list-s li'),
+        partner: Partner($, '#partners .list-s li'),
+    };
+    obj.base.name = findPosition($, '#content h1')[0].children[0].data
+    obj.base.sex = extraction(findPosition($, '#headline .info li span')[0].next.data);
+    obj.base.constellation = extraction(findPosition($, '#headline .info li span')[1].next.data);
+    obj.base.birthday = extraction(findPosition($, '#headline .info li span')[2].next.data);
+    obj.base.place = extraction(findPosition($, '#headline .info li span')[3].next.data);
+    obj.base.job = extraction(findPosition($, '#headline .info li span')[4].next.data);
+    obj.base.pic = httpComplete(findPosition($, '#headline a.nbg')[0].attribs.href);
+
+    try {
+        obj.synopsis = extraction(synopsis($, '#intro .bd .all'));
+    } catch (e) {
+        obj.synopsis = extraction(synopsis($, '#intro .bd'));
+
+    }
+    return obj;
+
+    function Partner($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(findPosition($, link + ' .pic a')[i].attribs.href),
+                img: httpComplete(findPosition($, link + ' .pic img')[i].attribs.src),
+                name: findPosition($, link + ' .pic img')[i].attribs.alt,
+                num: parseInt(findPosition($, link + ' .info .pl a')[i].children[0].data),
+            }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+    function Movie($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(findPosition($, link+' .pic a')[i].attribs.href),
+                img: httpComplete(findPosition($, link + ' .pic img')[i].attribs.src),
+                name: findPosition($, link + ' .pic img')[i].attribs.title,
+            }
+            try {
+                m.star = parseInt(findPosition($, link + ' .info em')[i].children[0].data);
+            }catch(e) {
+                m.star = -1;
+            }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+    function Pic($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(event[i].attribs.href),
+                img: httpComplete(event[i].children[1].attribs.src),
+            }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+    function synopsis($, link) {
+
+        var str = "";
+        var event = findPosition($, link)[0].children;
+        for (var i = 0; i < event.length; i++) {
+            if (event[i].data != undefined) {
+                str = str + "/" + event[i].data;
+            }
+        }
+        return str.substr(1);
+    }
+
+}
+
+function filterpeopleAll(html) {
+    var $ = cheerio.load(html);
+    var obj = {};
+    var event = findPosition($, '#celebrities .list-wrapper');
+    for (var i = 0; i < event.length; i++) {
+        obj[event[i].children[1].children[0].data.split(' ')[0]] = List($, '#celebrities .list-wrapper .celebrities-list',i);
+    }
+
+    return obj;
+
+    function List($, link, num) {
+        var arr = new Array();
+        var event = findPosition($, link)[num].children;
+        for (var i = 1; i < event.length; i+=2) {
+            var m = {
+                link: httpComplete(event[i].children[1].attribs.href),
+                name: event[i].children[1].attribs.title,
+                img: "http" + event[i].children[1].children[1].attribs.style.split('http')[1],
+
+                work: Work(findPosition($, "#celebrities .list-wrapper .celebrities-list .works")[num].children),
+            }
+
+            arr.push(m);
+        }
+        return arr;
+    }
+    function Work(event) {
+        var arr = [];
+        for (var i = 1 ; i < event.length; i += 2) {
+            var m = {
+                movie: event[i].attribs.title,
+                link: event[i].attribs.href,
+            }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+}
+//解析人员列表
+
+function filtershowMovieAll(html) {
+    var $ = cheerio.load(html);
+    var obj = {};
+    obj.list = List($, '.video-list  li');
+    return obj;
+
+    function List($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(event[i].children[1].attribs.href),
+                img: httpComplete(event[i].children[1].children[1].attribs.src),
+                long: event[i].children[1].children[3].children[0].children[0].data,
+                title: extraction(event[i].children[3].children[0].children[0].data),
+                time: event[i].children[5].children[0].children[0].data,
+            }
+
+            arr.push(m);
+        }
+        return arr;
+    }
+
+}
+//解析预告片列表
+
+function filterpicAll(html) {
+    var $ = cheerio.load(html);
+    var obj = {};
+    obj.list = List($, '.article .mod  li[class!="last more-pics"]');
+    return obj;
+
+    function List($, link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(event[i].children[1].attribs.href),
+                img: httpComplete(event[i].children[1].children[1].attribs.src),
+            }
+            arr.push(m);
+        }
+        return arr;
+    }
+
+}
+//解析图片列表
+
+function filtershowMovie(html) {
+    var $ = cheerio.load(html);
+    var obj = {
+        movie: httpComplete(findPosition($, '#movie_player video source')[0].attribs.src),
+    }
+    obj.list = List($, '#video-list .video-list-col li');
+    return obj;
+
+    function List($,link) {
+        var arr = new Array();
+        var event = findPosition($, link);
+        for (var i = 0; i < event.length; i++) {
+            var m = {
+                link: httpComplete(event[i].children[1].attribs.href),
+                img: httpComplete(event[i].children[1].children[1].attribs.src),
+                long: event[i].children[1].children[3].children[0].data,
+                title: event[i].children[1].children[5].children[0].data,
+            }
+
+            arr.push(m);
+        }
+        return arr;
+
+    }
+    
+}
+//解析预告片
+
 function filterbigPic(html) {
     var $ = cheerio.load(html);
-    return httpComplete(findPosition($, ' .photo-show  img')[0].attribs.src);
+    var obj = {
+        link: httpComplete(findPosition($, ' .photo-show  img')[0].attribs.src),
+        from: findPosition($, ' .poster-info .pl  a')[0].children[0].data,
+        time: sub(findPosition($, ' .poster-info  .pl:contains("上传于")')[0].children[0].data,4,0),
+    }
+    return obj;
 }
+//解析大图片
 
 function filterindex(html) {
     var $ = cheerio.load(html); //传入文档启动解析
@@ -124,8 +352,12 @@ function filterindex(html) {
                 title: event[i].children[1].children[0].children[0].data,
                 link: httpComplete(event[i].children[1].children[0].attribs.href),
                 name: event[i].children[3].children[1].children[0].data,
-                backNum: parseInt(sub(event[1].children[5].children[0].children[0].data,1,3)),
                 time: event[i].children[7].children[0].children[0].data,
+            }
+            try {
+                m.backNum = parseInt(sub(event[i].children[5].children[0].children[0].data, 1, 3));
+            } catch (e) {
+                m.backNum = 0;
             }
             
             arr.push(m);
@@ -345,41 +577,41 @@ function filterNow(html) {
 
 
 
-function getHTML(url, caller, fn) {
-    var timer = setTimeout(function () {
-        send(caller, "网络错误！ --->无法访问指定的url");
-    }, 4000)
-
-    http.get(url, function (res) {
-
-        var chunks = [];
-        var size = 0;
-
-        res.on('data', function (chunk) {   //监听事件 传输
-            chunks.push(chunk);
-            size += chunk.length;
-        });
-        res.on('end', function () {  //数据传输完
-            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
-            var html = data.toString();
-            try {
-                var back = fn(html, url);
-                var flag = 1;
-            } catch (e) {
-                clearTimeout(timer);
-                send(caller, "解析错误！ --->url与解析模式不匹配");
-            }
-            if (flag) {
-                clearTimeout(timer);
-                send(caller, JSON.stringify(back));
-            }
-        })
-
-    }).on('error', function () {
-        clearTimeout(timer);
-        send(caller,"网络错误！ --->无法访问指定的url");
-    })
-}
+//function getHTML(url, caller, fn) {
+//    var timer = setTimeout(function () {
+//        send(caller, "网络错误！ --->无法访问指定的url");
+//    }, 4000)
+//
+//    http.get(url, function (res) {
+//
+//        var chunks = [];
+//        var size = 0;
+//
+//        res.on('data', function (chunk) {   //监听事件 传输
+//            chunks.push(chunk);
+//            size += chunk.length;
+//        });
+//        res.on('end', function () {  //数据传输完
+//            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
+//            var html = data.toString();
+//            try {
+//                var back = fn(html, url);
+//                var flag = 1;
+//            } catch (e) {
+//                clearTimeout(timer);
+//                send(caller, "解析错误！ --->url与解析模式不匹配");
+//            }
+//            if (flag) {
+//                clearTimeout(timer);
+//                send(caller, JSON.stringify(back));
+//            }
+//        })
+//
+//    }).on('error', function () {
+//        clearTimeout(timer);
+//        send(caller,"网络错误！ --->无法访问指定的url");
+//    })
+//}
 //获取HTML页面
 function send(caller,message) {
     caller.setHeader("Content-type", "text/plain;charset=utf-8")
@@ -465,5 +697,22 @@ function httpComplete(letter) {
 }
 //补全http域名
 
+function getHTML(url, caller, fn) {
+    http.get(url, function (res) {
 
+        var chunks = [];
+        var size = 0;
+
+        res.on('data', function (chunk) {   //监听事件 传输
+            chunks.push(chunk);
+            size += chunk.length;
+        });
+        res.on('end', function () {  //数据传输完
+            var data = Buffer.concat(chunks, size); //返回一个合并了 list 中所有 Buffer 的新 Buffer
+            var html = data.toString();
+            send(caller, JSON.stringify(fn(html, url)));
+        })
+    })
+}
+//获取HTML页面
 
