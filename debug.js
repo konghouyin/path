@@ -20,52 +20,52 @@ server.all("*", function (req, res, next) {
 })
 
 server.all('/nowplaying', function (req, res) {
-    console.log("nowplaying");
+    console.log(new Date()+"          nowplaying");
     getHTML("https://movie.douban.com/cinema/nowplaying/xian/", res, filterNow);
 })
 
 server.all('/comingAll', function (req, res) {
-    console.log("comingAll");
+    console.log(new Date() +"          comingAll");
     getHTML("https://movie.douban.com/coming", res, filterComAll);
 })
 
 server.all('/comingImp', function (req, res) {
-    console.log("comingImp");
+    console.log(new Date() +"          comingImp");
     getHTML("https://movie.douban.com/cinema/later/xian/", res, filterComImp);
 })
 
 server.all('/index', function (req, res) {
-    console.log("index  -->  "+ req.query.url);
+    console.log(new Date() +"          index  -->  "+ req.query.url);
     getHTML(req.query.url, res, filterindex);
 })
 
 server.all('/bigPic', function (req, res) {
-    console.log("bigPic  -->  " + req.query.url);
+    console.log(new Date() +"          bigPic  -->  " + req.query.url);
     getHTML(req.query.url, res, filterbigPic);
 })
 
 server.all('/showMovie', function (req, res) {
-    console.log("showMovie  -->  " + req.query.url);
+    console.log(new Date() +"          showMovie  -->  " + req.query.url);
     getHTML(req.query.url, res, filtershowMovie);
 })
 
 server.all('/picAll', function (req, res) {
-    console.log("picAll  -->  " + req.query.url);
+    console.log(new Date() +"          picAll  -->  " + req.query.url);
     getHTML(req.query.url, res, filterpicAll);
 })
 
 server.all('/showMovieAll', function (req, res) {
-    console.log("showMovieAll  -->  " + req.query.url);
+    console.log(new Date() +"          showMovieAll  -->  " + req.query.url);
     getHTML(req.query.url, res, filtershowMovieAll);
 })
 
 server.all('/personAll', function (req, res) {
-    console.log("peopleAll  -->  " + req.query.url);
+    console.log(new Date() +"          peopleAll  -->  " + req.query.url);
     getHTML(req.query.url, res, filterpeopleAll);
 })
 
 server.all('/person', function (req, res) {
-    console.log("people  -->  " + req.query.url);
+    console.log(new Date() +"          people  -->  " + req.query.url);
     getHTML(req.query.url, res, filterpeople);
 })
 
@@ -76,12 +76,12 @@ server.all('/top', function (req, res) {
     } else {
         url = req.query.url;
     }
-    console.log("top  -->  " + url);
+    console.log(new Date() +"          top  -->  " + url);
     getHTML(url, res, filterTop);
 })
 
 server.all('/hot', function (req, res) {
-    console.log("hot");
+    console.log(new Date() +"          hot");
     getHTML("https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=50&page_start=0", res, filterHot);
 })
 
@@ -155,17 +155,32 @@ function filterpeople(html) {
     };
     obj.base.name = findPosition($, '#content h1')[0].children[0].data
     obj.base.sex = extraction(findPosition($, '#headline .info li span')[0].next.data);
-    obj.base.constellation = extraction(findPosition($, '#headline .info li span')[1].next.data);
-    obj.base.birthday = extraction(findPosition($, '#headline .info li span')[2].next.data);
-    obj.base.place = extraction(findPosition($, '#headline .info li span')[3].next.data);
-    obj.base.job = extraction(findPosition($, '#headline .info li span')[4].next.data);
+		try{
+			obj.base.constellation = extraction(findPosition($, '#headline .info li span')[1].next.data);
+		}catch(e){
+			obj.base.constellation = null;
+		}
+		try{
+			obj.base.birthday = extraction(findPosition($, '#headline .info li span')[2].next.data);
+		}catch(e){
+			obj.base.birthday = null;
+		}
+		try{
+			obj.base.place = extraction(findPosition($, '#headline .info li span')[3].next.data);
+		}catch(e){
+			obj.base.place = null;
+		}
+		try{
+			obj.base.job = extraction(findPosition($, '#headline .info li span')[4].next.data);
+		}catch(e){
+			obj.base.job = null;
+		}
     obj.base.pic = httpComplete(findPosition($, '#headline a.nbg')[0].attribs.href);
 
     try {
         obj.synopsis = extraction(synopsis($, '#intro .bd .all'));
     } catch (e) {
         obj.synopsis = extraction(synopsis($, '#intro .bd'));
-
     }
     return obj;
 
@@ -673,6 +688,7 @@ function getHTML(url, caller, fn) {
                 var flag = 1;
             } catch (e) {
                 clearTimeout(timer);
+								console.error(e);//抛出错误信息
                 send(caller, "解析错误！ --->url与解析模式不匹配");
             }
             if (flag) {
