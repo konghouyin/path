@@ -20,53 +20,53 @@ server.all("*", function (req, res, next) {
 })
 
 server.all('/nowplaying', function (req, res) {
-    console.log(new Date()+"          nowplaying");
-    getHTML("https://movie.douban.com/cinema/nowplaying/xian/", res, filterNow);
+    console.log(new Date().toLocaleString()+"          nowplaying");
+    getHTML("https://movie.douban.com/cinema/nowplaying/xian/", res,"/nowplaying", filterNow);
 })
 
 server.all('/comingAll', function (req, res) {
-    console.log(new Date() +"          comingAll");
-    getHTML("https://movie.douban.com/coming", res, filterComAll);
+    console.log(new Date().toLocaleString() +"          comingAll");
+    getHTML("https://movie.douban.com/coming", res,"/comingAll", filterComAll);
 })
 
 server.all('/comingImp', function (req, res) {
-    console.log(new Date() +"          comingImp");
-    getHTML("https://movie.douban.com/cinema/later/xian/", res, filterComImp);
+    console.log(new Date().toLocaleString() +"          comingImp");
+    getHTML("https://movie.douban.com/cinema/later/xian/", res,"/comingImp", filterComImp);
 })
 
 server.all('/index', function (req, res) {
-    console.log(new Date() +"          index  -->  "+ req.query.url);
-    getHTML(req.query.url, res, filterindex);
+    console.log(new Date().toLocaleString() +"          index  -->  "+ req.query.url);
+    getHTML(req.query.url, res,"/index", filterindex);
 })
 
 server.all('/bigPic', function (req, res) {
-    console.log(new Date() +"          bigPic  -->  " + req.query.url);
-    getHTML(req.query.url, res, filterbigPic);
+    console.log(new Date().toLocaleString() +"          bigPic  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/bigPic", filterbigPic);
 })
 
 server.all('/showMovie', function (req, res) {
-    console.log(new Date() +"          showMovie  -->  " + req.query.url);
-    getHTML(req.query.url, res, filtershowMovie);
+    console.log(new Date().toLocaleString() +"          showMovie  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/showMovie", filtershowMovie);
 })
 
 server.all('/picAll', function (req, res) {
-    console.log(new Date() +"          picAll  -->  " + req.query.url);
-    getHTML(req.query.url, res, filterpicAll);
+    console.log(new Date().toLocaleString() +"          picAll  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/picAll", filterpicAll);
 })
 
 server.all('/showMovieAll', function (req, res) {
-    console.log(new Date() +"          showMovieAll  -->  " + req.query.url);
-    getHTML(req.query.url, res, filtershowMovieAll);
+    console.log(new Date().toLocaleString() +"          showMovieAll  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/showMovieAll", filtershowMovieAll);
 })
 
 server.all('/personAll', function (req, res) {
-    console.log(new Date() +"          peopleAll  -->  " + req.query.url);
-    getHTML(req.query.url, res, filterpeopleAll);
+    console.log(new Date().toLocaleString() +"          peopleAll  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/personAll", filterpeopleAll);
 })
 
 server.all('/person', function (req, res) {
-    console.log(new Date() +"          people  -->  " + req.query.url);
-    getHTML(req.query.url, res, filterpeople);
+    console.log(new Date().toLocaleString() +"          people  -->  " + req.query.url);
+    getHTML(req.query.url, res,"/person", filterpeople);
 })
 
 server.all('/top', function (req, res) {
@@ -76,13 +76,13 @@ server.all('/top', function (req, res) {
     } else {
         url = req.query.url;
     }
-    console.log(new Date() +"          top  -->  " + url);
-    getHTML(url, res, filterTop);
+    console.log(new Date().toLocaleString() +"          top  -->  " + url);
+    getHTML(url, res,"/top", filterTop);
 })
 
 server.all('/hot', function (req, res) {
-    console.log(new Date() +"          hot");
-    getHTML("https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=50&page_start=0", res, filterHot);
+    console.log(new Date().toLocaleString() +"          hot");
+    getHTML("https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=50&page_start=0", res,"/hot", filterHot);
 })
 
 server.listen(798);
@@ -111,7 +111,10 @@ function filterTop(html) {
     var obj = {};
     obj.top = List($, '.grid_view  li>.item');
     obj.next = arguments[1] + findPosition($, '.paginator span.next a')[0].attribs.href;
-    return obj;
+		var back = {
+			Ftop:obj,
+		}
+    return back;
 
     function List($, link) {
         var arr = new Array();
@@ -182,7 +185,10 @@ function filterpeople(html) {
     } catch (e) {
         obj.synopsis = extraction(synopsis($, '#intro .bd'));
     }
-    return obj;
+		var back = {
+			person:obj,
+		}
+    return back;
 
     function Partner($, link) {
         var arr = new Array();
@@ -253,8 +259,17 @@ function filterpeopleAll(html) {
     for (var i = 0; i < event.length; i++) {
         obj[event[i].children[1].children[0].data.split(' ')[0]] = List($, '#celebrities .list-wrapper .celebrities-list',i);
     }
-
-    return obj;
+		var arr = [];
+		for(each in obj){
+			for(thing in obj[each]){
+				obj[each][thing].type = each;
+				arr.push(obj[each][thing]);
+			}
+		}
+		var back = {
+			peopleAll:arr
+		}
+    return back;
 
     function List($, link, num) {
         var arr = new Array();
@@ -291,6 +306,7 @@ function filtershowMovieAll(html) {
     var $ = cheerio.load(html);
     var obj = {};
     obj.showMovieAll = List($, '.video-list  li');
+			
     return obj;
 
     function List($, link) {
@@ -301,8 +317,8 @@ function filtershowMovieAll(html) {
                 link: httpComplete(event[i].children[1].attribs.href),
                 img: httpComplete(event[i].children[1].children[1].attribs.src),
                 long: event[i].children[1].children[3].children[0].children[0].data,
-                title: extraction(event[i].children[3].children[0].children[0].data),
-                time: event[i].children[5].children[0].children[0].data,
+                title: extraction(findPosition($,link+" p a")[i].children[0].data),
+                time:extraction(findPosition($,link+" p.trail-meta span")[i].children[0].data),
             }
 
             arr.push(m);
@@ -317,7 +333,10 @@ function filterpicAll(html) {
     var $ = cheerio.load(html);
     var obj = {};
     obj.pic = List($, '.article .mod  li[class!="last more-pics"]');
-    return obj;
+		var back = {
+			picAll:obj,
+		}
+    return back;
 
     function List($, link) {
         var arr = new Array();
@@ -341,7 +360,10 @@ function filtershowMovie(html) {
         movie: httpComplete(findPosition($, '#movie_player video source')[0].attribs.src),
     }
     obj.showMovieList = List($, '#video-list .video-list-col li');
-    return obj;
+		var back = {
+			showMovie:obj,
+		}
+    return back;
 
     function List($,link) {
         var arr = new Array();
@@ -357,9 +379,7 @@ function filtershowMovie(html) {
             arr.push(m);
         }
         return arr;
-
     }
-    
 }
 //解析预告片
 
@@ -370,7 +390,10 @@ function filterbigPic(html) {
         from: findPosition($, ' .poster-info .pl  a')[0].children[0].data,
         time: sub(findPosition($, ' .poster-info  .pl:contains("上传于")')[0].children[0].data,4,0),
     }
-    return obj;
+		var back ={
+			pic:obj,
+		}
+		return back;
 }
 //解析大图片
 
@@ -430,8 +453,10 @@ function filterindex(html) {
     obj.discuss = Discuss($, "div.section-discussion .olt tr");
     obj.moreDiscuss.link = httpComplete(findPosition($, 'div.section-discussion p.pl a')[0].attribs.href);
     obj.moreDiscuss.num = parseInt(sub(extraction(findPosition($, 'div.section-discussion p.pl a')[0].children[0].data), 14, 2));
-
-    return obj;
+		var back ={
+			index:obj,
+		}
+    return back;
 
     function Discuss($, link) {
         var arr = new Array();
@@ -665,10 +690,18 @@ function filterNow(html) {
 //解析正在上映的电影
 
 
-
-function getHTML(url, caller, fn) {
+var flag = 1;
+function getHTML(url, caller, type,fn) {
+		if(flag!=1){
+			send(caller, "网络错误！ --->网络请求忙！");
+			console.error("\n\n"+new Date().toLocaleString()+"        短时间大量请求!\ntype: "+type+"\t\turl: "+url)
+			return;
+		}
+		flag = 0;
+		setTimeout(function(){flag = 1},1000);
     var timer = setTimeout(function () {
         send(caller, "网络错误！ --->无法访问指定的url");
+				console.error("\n\n"+new Date().toLocaleString()+"        网络超时!\ntype: "+type+"\t\turl: "+url)
     }, 4000)
 
     http.get(url, function (res) {
@@ -688,6 +721,7 @@ function getHTML(url, caller, fn) {
                 var flag = 1;
             } catch (e) {
                 clearTimeout(timer);
+								console.error("\n\n"+new Date().toLocaleString()+"        解析错误!\ntype: "+type+"\t\turl: "+url);
 								console.error(e);//抛出错误信息
                 send(caller, "解析错误！ --->url与解析模式不匹配");
             }
@@ -786,6 +820,4 @@ function httpComplete(letter) {
     }
 }
 //补全http域名
-
-
 

@@ -102,119 +102,121 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    base:{
-        actors:[{
-            name:"约翰·C·赖利",
-            link:"https://movie.douban.com/...",
-        },...],
-        director:[{
-            name:"菲尔·约翰斯顿",
-            link:"https://movie.douban.com/...",
-        },...],
-        img: "https://img3.doubanio.com/...",
-        language:"英语",
-		name: "无敌破坏王2",
-		place: "美国",
-		remane: "无敌破坏王2...",
-		runtime: 112,
-        scenarist:[{
-            name:"菲尔·约翰斯顿",
-            link:"https://movie.douban.com/...",
-        },...],
-		time: "2018-11-23(中国大陆)/2018-11-21(美国)",
-		type: "喜剧/动画/奇幻/冒险",
- 	},
-	star:{
-        average: 8.7,
-        star1: 0.1,
-        star2: 1.2,
-        star3: 11.8,
-        star4: 35.4,
-        star5: 51.5,
-        votes: 4423
-    },
-	synopsis:"《无敌破坏王2：大闹互联网》从电玩世界来到...",
-    person:[
-        {
-            img:"https://img1.doubanio.com/...",
-            name:"瑞奇·摩尔",
-            role:"导演",
-            link:"https://img1.doubanio.com/...",
-        },
-        ....
-    ],
-	personAllLink:"https://img1.doubanio.com/...",
-    showMovie:[
-        {
-            img:"https://img1.doubanio.com/...",
-            link:"https://img1.doubanio.com/...",
-        },
-        ...
-    ],
-    moreShowMovie:"https://img1.doubanio.com/...",
-    pic:[
-        {
-        	img:"https://img1.doubanio.com/...",
-        	link:"https://img1.doubanio.com/...",
-        },
-        ...
-    ],
-    morePic:"https://img1.doubanio.com/...",    
-    sameMovie:[
-        {
-            img:"https://img1.doubanio.com/...",
-            name:"驯龙高手3"
-            link:"https://img1.doubanio.com/...",
-        },
-        ...
-    ],
-    shortCommentary:[
-        {
-        	name:"凌睿",
-        	type:"看过",
-        	star:5,
-            time:["2018-11-21","00:11:38"],
-        	message:"相当于迪士尼的《头号玩家》...",
-        	goodNumber:626,
-        },
-        ...
-    ],
-	moreShortCommentary:{
-    	link:"https://img1.doubanio.com/...",
-        num:2999,
-    },
-    movieCommentary:[
-        {
-            name:"凌睿",
-            tittle:"第67名：美国影片《超人总动员》",
-            star:4,
-            time: ["2011-08-16", "10:00:35"],
-            link:"https://movie.douban.com/...",
-            message:"超人不会飞？《超人总动员》The...",
-            goodNumber:81,
-            badnumber:9,
-        },
-        ...
-    ],
-    moreMovieCommentary:{
-    	link:"https://img1.doubanio.com/...",
-        num:209
-    },
-    discuss:[
-        {
-            name:"中学生天地郭宁"
-            tittle:"伤心！买票买成国语版了！"
-            time:"2018-11-24"
-            link:"https://img1.doubanio.com/...",
-            backNumer:10，        
-        },
-        ...
-    ]
-	moreDiscuss:{
-    	link:"https://img1.doubanio.com/...",
-        num:209
-    },
-  }
+	index:{
+			base:{
+					actors:[{
+							name:"约翰·C·赖利",
+							link:"https://movie.douban.com/...",
+					},...],
+					director:[{
+							name:"菲尔·约翰斯顿",
+							link:"https://movie.douban.com/...",
+					},...],
+					img: "https://img3.doubanio.com/...",
+					language:"英语",
+			name: "无敌破坏王2",
+			place: "美国",
+			remane: "无敌破坏王2...",
+			runtime: 112,
+					scenarist:[{
+							name:"菲尔·约翰斯顿",
+							link:"https://movie.douban.com/...",
+					},...],
+			time: "2018-11-23(中国大陆)/2018-11-21(美国)",
+			type: "喜剧/动画/奇幻/冒险",
+		},
+		star:{
+					average: 8.7,
+					star1: 0.1,
+					star2: 1.2,
+					star3: 11.8,
+					star4: 35.4,
+					star5: 51.5,
+					votes: 4423
+			},
+		synopsis:"《无敌破坏王2：大闹互联网》从电玩世界来到...",
+			person:[
+					{
+							img:"https://img1.doubanio.com/...",
+							name:"瑞奇·摩尔",
+							role:"导演",
+							link:"https://img1.doubanio.com/...",
+					},
+					....
+			],
+		personAllLink:"https://img1.doubanio.com/...",
+			showMovie:[
+					{
+							img:"https://img1.doubanio.com/...",
+							link:"https://img1.doubanio.com/...",
+					},
+					...
+			],
+			moreShowMovie:"https://img1.doubanio.com/...",
+			pic:[
+					{
+						img:"https://img1.doubanio.com/...",
+						link:"https://img1.doubanio.com/...",
+					},
+					...
+			],
+			morePic:"https://img1.doubanio.com/...",    
+			sameMovie:[
+					{
+							img:"https://img1.doubanio.com/...",
+							name:"驯龙高手3"
+							link:"https://img1.doubanio.com/...",
+					},
+					...
+			],
+			shortCommentary:[
+					{
+						name:"凌睿",
+						type:"看过",
+						star:5,
+							time:["2018-11-21","00:11:38"],
+						message:"相当于迪士尼的《头号玩家》...",
+						goodNumber:626,
+					},
+					...
+			],
+		moreShortCommentary:{
+				link:"https://img1.doubanio.com/...",
+					num:2999,
+			},
+			movieCommentary:[
+					{
+							name:"凌睿",
+							tittle:"第67名：美国影片《超人总动员》",
+							star:4,
+							time: ["2011-08-16", "10:00:35"],
+							link:"https://movie.douban.com/...",
+							message:"超人不会飞？《超人总动员》The...",
+							goodNumber:81,
+							badnumber:9,
+					},
+					...
+			],
+			moreMovieCommentary:{
+				link:"https://img1.doubanio.com/...",
+					num:209
+			},
+			discuss:[
+					{
+							name:"中学生天地郭宁"
+							tittle:"伤心！买票买成国语版了！"
+							time:"2018-11-24"
+							link:"https://img1.doubanio.com/...",
+							backNumer:10，        
+					},
+					...
+			]
+		moreDiscuss:{
+				link:"https://img1.doubanio.com/...",
+					num:209
+			},
+	}  
+}
 ```
 
 注意：
@@ -235,9 +237,11 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    from: "YthguaN-"
-	link: "https://img3.doubanio.com/..."
-	time: "2018-11-20"
+	pic:{
+			from: "YthguaN-"
+		link: "https://img3.doubanio.com/..."
+		time: "2018-11-20"
+	}
 }
 ```
 
@@ -252,16 +256,18 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    showMovieList:[
-        {
-            tittle:"预告片2",
-            long:"00:30",
-            link:"https://img1.doubanio.com/...",
-            img:"https://img1.doubanio.com/...",        
-        },
-        ...
-    ],
-	movie: "http://vt1.doubanio.com/...",
+	showMovie:{
+			showMovieList:[
+					{
+							tittle:"预告片2",
+							long:"00:30",
+							link:"https://img1.doubanio.com/...",
+							img:"https://img1.doubanio.com/...",        
+					},
+					...
+			],
+		movie: "http://vt1.doubanio.com/...",
+	}
 }
 ```
 
@@ -276,13 +282,15 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    pic:[
-        {
-            img: "https://img3.doubanio.com/...",
+	picAll:{
+		pic:[
+				{
+						img: "https://img3.doubanio.com/...",
 			link: "https://movie.douban.com/...",
-        },
-        ...
-    ]
+				},
+				...
+		]
+	}
 }
 ```
 
@@ -294,7 +302,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 - 方法：GET
 
-- 参数：url eg：http://www.konghouy.cn:798/showMovieAll?url=https://movie.douban.com/subject/20438964/trailer#trailer
+- 参数：url eg：http://www.konghouy.cn:798/showMovieAll?url=https://movie.douban.com/subject/20438964/trailer
 
 - 返回 
 
@@ -321,11 +329,12 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 - 返回 
 ```
 {	
-	制片人:[
+	peopleAll:[
         {
             img:"https://img1.doubanio.com/...",
             link:"https://img1.doubanio.com/...",
             name:"宋芸桦 Vivian Sung",
+			type:"演员",
             work:[
                 {
                     movie:"我的少女时代",
@@ -338,8 +347,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 	]
 ```
 
-注意：这组数据对象中属性的个数不确定，属性名为职位，根据不同影片进行调整
-
+注意：数据需要修改
 ## 10.演员信息
 
 - url：/person
@@ -349,50 +357,52 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    base:{
-        birthday: ":1992-10-21",
-        constellation: ":天秤座",
-        job: ":演员",
-        name: "宋芸桦 Vivian Sung",
-        pic: "https://img1.doubanio.com/...",
-        place: ":中国,台湾",
-        sex: ":女",
-    },
-    goodMovie:[
-        {
-            img: "https://img3.doubanio.com/...",
-            link: "https://movie.douban.com/...",
-            name: "我的少女時代",
-            star: 7,
-        },
-        ...
-    ],
-    recentMovie: [
-        {
-            img: "https://img1.doubanio.com/...",
-            link: "https://movie.douban.com/...",
-            name: "西虹市首富",
-            star: 6,
-        },
-        ...
-    ],
-    pic:[
-        {
-            img: "https://img3.doubanio.com/...",
+	person:{
+		base:{
+				birthday: ":1992-10-21",
+				constellation: ":天秤座",
+				job: ":演员",
+				name: "宋芸桦 Vivian Sung",
+				pic: "https://img1.doubanio.com/...",
+				place: ":中国,台湾",
+				sex: ":女",
+		},
+		goodMovie:[
+				{
+						img: "https://img3.doubanio.com/...",
+						link: "https://movie.douban.com/...",
+						name: "我的少女時代",
+						star: 7,
+				},
+				...
+		],
+		recentMovie: [
+				{
+						img: "https://img1.doubanio.com/...",
+						link: "https://movie.douban.com/...",
+						name: "西虹市首富",
+						star: 6,
+				},
+				...
+		],
+		pic:[
+				{
+						img: "https://img3.doubanio.com/...",
 			link: "https://movie.douban.com/...",
-        },
-        ...
-    ],
-    partner:[
-        {
-            img: "https://img3.doubanio.com/...",
-            link: "https://movie.douban.com/...",
-            name: "侯彦西",
-            num: 4,
-        },
-        ...
-    ],
-    synopsis: "宋芸桦，台湾女演员。..."
+				},
+				...
+		],
+		partner:[
+				{
+						img: "https://img3.doubanio.com/...",
+						link: "https://movie.douban.com/...",
+						name: "侯彦西",
+						num: 4,
+				},
+				...
+		],
+		synopsis: "宋芸桦，台湾女演员。..."
+	}
 }
 ```
 
@@ -422,18 +432,20 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 
 ```json
 {
-    top:[
-        {
-            img: "https://img3.doubanio.com/...",
-            link: "https://movie.douban.com/...",
-            message: "导演:弗兰...~1994/美国/犯罪剧情",
-            num: 1204520,
-            quote: "希望让人自由。",
-            star: 9.6,
-        },
-        ...
-    ],
-    next: "https://img3.doubanio.com/...",
+	Ftop:{
+		top:[
+				{
+						img: "https://img3.doubanio.com/...",
+						link: "https://movie.douban.com/...",
+						message: "导演:弗兰...~1994/美国/犯罪剧情",
+						num: 1204520,
+						quote: "希望让人自由。",
+						star: 9.6,
+				},
+				...
+		],
+		next: "https://img3.doubanio.com/...",
+	}
 }
 ```
 
@@ -466,3 +478,4 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 - 当基础url输入错误，相关数据无法发送后台，可能会没有相应，导致超时错误
 - 当url参数输入有误，会导致错误后台拿不到需要解析的页面，会返回"网络错误！ --->无法访问指定的url"
 - 当指定解析模式与url不匹配时，会返回"解析错误！ --->url与解析模式不匹配"。(当后台无法判断解析模式是否与url匹配时，会返回空对象)
+- 一秒内多次访问，会导致后台请求限制保护机制的处理。返回"网络错误！ --->网络请求忙！"
