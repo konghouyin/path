@@ -145,6 +145,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 					....
 			],
 		personAllLink:"https://img1.doubanio.com/...",
+		paesonNum:23,
 			showMovie:[
 					{
 							img:"https://img1.doubanio.com/...",
@@ -161,6 +162,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 					...
 			],
 			morePic:"https://img1.doubanio.com/...",    
+			picNum:316,
 			sameMovie:[
 					{
 							img:"https://img1.doubanio.com/...",
@@ -187,6 +189,7 @@ ps：基础url: http://www.konghouy.cn:798(请求时，将对应的url添加在�
 			movieCommentary:[
 					{
 							name:"凌睿",
+							img："https://movie.douban.com/...",
 							tittle:"第67名：美国影片《超人总动员》",
 							star:4,
 							time: ["2011-08-16", "10:00:35"],

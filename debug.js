@@ -433,12 +433,15 @@ function filterindex(html) {
 
     obj.person = personListMain($, ".celebrities-list");
     obj.personAllLink = httpComplete(findPosition($, '#celebrities > h2 > span > a')[0].attribs.href);
+		obj.personNum = parseInt(sub(findPosition($, '#celebrities > h2 > span > a')[0].children[0].data,3,0));
 
     obj.showMovie = Movie($, ".label-trailer");
     obj.moreShowMovie = httpComplete(findPosition($, '#related-pic > h2  a')[0].attribs.href);
+		
 
     obj.pic = pic($, "#related-pic .related-pic-bd  img");
     obj.morePic = httpComplete(findPosition($, '#related-pic > h2  a:contains("图片")')[0].attribs.href);
+		obj.picnum = parseInt(sub(findPosition($, '#related-pic > h2  a:contains("图片")')[0].children[0].data,3,0));
 
     obj.sameMovie = sameMovie($, "#recommendations .recommendations-bd  dl");
 
@@ -484,15 +487,22 @@ function filterindex(html) {
         var event = findPosition($, link);
         for (var i = 0; i < event.length; i++) {
             var m = {
+								img:httpComplete(findPosition($, link + " img")[i].attribs.src),
                 name: findPosition($, link + " .name")[i].children[0].data,
                 link: httpComplete(findPosition($, link + " .main-bd h2 a")[i].attribs.href),
                 title: findPosition($, link + " .main-bd h2 a")[i].children[0].data,
                 goodNumber: parseInt(findPosition($, link + " .action-btn.up span")[i].children[0].data),
                 badNumber: parseInt(findPosition($, link + " .action-btn.down span")[i].children[0].data),
                 time: findPosition($, link + " .main-meta")[i].children[0].data.split(' '),
-
-                message: extraction(findPosition($, link + " .short-content")[i].children[0].data),
             }
+						
+						if(findPosition($, link + " .short-content")[i].children.length == 5){
+							m.message = extraction(findPosition($, link + " .short-content")[i].children[2].data);
+						}else{
+							m.message = extraction(findPosition($, link + " .short-content")[i].children[0].data);
+						}
+						
+						
             try {
                 m.star = parseInt(findPosition($, link + " .main-title-rating")[i].attribs.class.substr(7, 1));
             } catch (e) {
@@ -705,7 +715,6 @@ function getHTML(url, caller, type,fn) {
     }, 4000)
 
     http.get(url, function (res) {
-
         var chunks = [];
         var size = 0;
 
